@@ -54,6 +54,120 @@
             gap: 12px;
         }
 
+        .book-card {
+            width: 100%;
+            display: flex;
+            align-items: stretch;
+            text-decoration: none;
+            color: inherit;
+            background: linear-gradient(135deg, #f8fbff 0%, #ffffff 100%);
+            border-radius: 14px;
+            overflow: hidden;
+            border: 1px solid rgba(0,0,0,0.06);
+            box-shadow: 0 16px 38px rgba(0,0,0,0.12);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+            margin-bottom: 16px;
+        }
+
+        .book-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 20px 46px rgba(0,0,0,0.14);
+        }
+
+        .book-card:active {
+            transform: translateY(0);
+        }
+
+        .book-card__thumb {
+            width: 120px;
+            min-height: 140px;
+            background: #eef1f7;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 14px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .book-card__thumb img {
+            width: 80px;
+            height: auto;
+            box-shadow: 0 8px 20px rgba(0,0,0,0.18);
+            transform: translateZ(0);
+            transition: transform 0.2s ease;
+        }
+
+        .book-card:hover .book-card__thumb img {
+            transform: translateY(-4px) rotate(1deg);
+        }
+
+        .book-card__body {
+            flex: 1;
+            padding: 16px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 4px;
+        }
+
+        .book-card__head {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+            margin-bottom: 4px;
+        }
+
+        .book-card__tag {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 0.02em;
+            color: #4a5cff;
+            background: rgba(74,92,255,0.08);
+            white-space: nowrap;
+        }
+
+        .book-card__title {
+            font-size: 15px;
+            font-weight: 800;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .book-card__desc {
+            margin: 0;
+            font-size: 12.5px;
+            line-height: 1.5;
+            color: #6b7280;
+            text-align: left;
+        }
+
+        .book-card__icon {
+            width: 14px;
+            height: 14px;
+            color: #c4c8d4;
+            flex-shrink: 0;
+            transition: color 0.2s ease;
+        }
+
+        .book-card:hover .book-card__icon {
+            color: #4a5cff;
+        }
+
+        .book-card__footer {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-top: 6px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 12.5px;
+        }
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 8px 25px rgba(0,0,0,0.2);
@@ -412,6 +526,27 @@
         <!-- 메인 화면 -->
         <div id="main-screen" class="screen active">
             <h1>한완기 실전편</h1>
+            <a class="book-card" href="https://pmh.kr/LHW2027pkg" target="_blank" rel="noopener noreferrer" aria-label="교재 구매 페이지로 이동">
+                <div class="book-card__thumb">
+                    <img src="/images/book_m.jpg" alt="2027 스탠다드 미적분 패스">
+                </div>
+                <div class="book-card__body">
+                    <div class="book-card__head">
+                        <span class="book-card__tag">교재 구매하러 가기</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="book-card__icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M15 3h6v6"></path>
+                            <path d="M10 14 21 3"></path>
+                            <path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"></path>
+                        </svg>
+                    </div>
+                    <h2 class="book-card__title">2027 스탠다드 미적분 패스</h2>
+                    <p class="book-card__desc">안정적인 미적분 1등급을 원한다면? 수능까지 함께하는 스탠다드 패스.</p>
+                    <div class="book-card__footer">
+                        <span>📘 교재 구매</span>
+                        <span aria-hidden="true">→</span>
+                    </div>
+                </div>
+            </a>
             <button class="btn btn-image" onclick="showScreen('image')">
                 단계별 전략 수립
             </button>
