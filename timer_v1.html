@@ -117,89 +117,25 @@
             display: block;
         }
 
+        /* 이미지 컨테이너 - 핀치 줌 지원 */
+        .image-container {
+            overflow: hidden;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            touch-action: none;
+        }
+
         .image-container img {
             width: 100%;
             border-radius: 12px;
-            margin-bottom: 15px;
-            cursor: pointer;
-        }
-
-        .image-caption {
-            color: #666;
-            font-size: 16px;
-            margin-bottom: 10px;
+            transform-origin: center center;
+            transition: transform 0.1s ease-out;
         }
 
         .zoom-hint {
             color: #999;
             font-size: 14px;
             margin-bottom: 15px;
-        }
-
-        /* 전체화면 이미지 뷰어 */
-        .fullscreen-viewer {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.95);
-            z-index: 1000;
-            overflow: hidden;
-            touch-action: none;
-        }
-
-        .fullscreen-viewer.active {
-            display: block;
-        }
-
-        .fullscreen-image-container {
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            overflow: hidden;
-        }
-
-        .fullscreen-image {
-            max-width: 100%;
-            max-height: 100%;
-            object-fit: contain;
-            transform-origin: center center;
-            transition: transform 0.1s ease-out;
-        }
-
-        .close-btn {
-            position: fixed;
-            top: 15px;
-            right: 20px;
-            font-size: 36px;
-            color: white;
-            cursor: pointer;
-            z-index: 1001;
-            background: rgba(0,0,0,0.5);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border: none;
-        }
-
-        .viewer-hint {
-            position: fixed;
-            bottom: 30px;
-            left: 50%;
-            transform: translateX(-50%);
-            color: white;
-            font-size: 14px;
-            background: rgba(0,0,0,0.5);
-            padding: 10px 20px;
-            border-radius: 20px;
-            z-index: 1001;
         }
 
         .timer-display {
@@ -337,8 +273,9 @@
         <!-- 이미지 화면 -->
         <div id="image-screen" class="screen">
             <h1>단계별 전략 수립</h1>
-            <div class="image-container">
-                <img src="단계별 전략_v2.png" alt="단계별 전략" onclick="openViewer()">
+            <p class="zoom-hint">🔍 두 손가락으로 확대/축소할 수 있어요</p>
+            <div class="image-container" id="image-container">
+                <img src="단계별 전략_v2.png" alt="단계별 전략" id="strategy-image">
             </div>
             <button class="btn btn-back" onclick="goBackFromImage()">
                 ← 뒤로 가기
@@ -378,15 +315,6 @@
         </div>
     </div>
 
-    <!-- 전체화면 이미지 뷰어 -->
-    <div id="fullscreen-viewer" class="fullscreen-viewer">
-        <button class="close-btn" onclick="closeViewer()">✕</button>
-        <div class="fullscreen-image-container">
-            <img id="fullscreen-image" class="fullscreen-image" src="" alt="확대 이미지">
-        </div>
-        <div class="viewer-hint">두 손가락으로 확대/축소 • 드래그로 이동</div>
-    </div>
-
     <script>
         // 타이머 관련 변수
         const maxTime = 100 * 60;
@@ -404,7 +332,7 @@
         // 현재 화면 상태
         let currentScreen = 'main';
 
-        // 핀치 줌 관련 변수
+        // 이미지 핀치 줌 관련 변수
         let scale = 1;
         let posX = 0;
         let posY = 0;
@@ -418,6 +346,11 @@
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screen + '-screen').classList.add('active');
             currentScreen = screen;
+            
+            // 이미지 화면으로 이동 시 줌 초기화
+            if (screen === 'image') {
+                resetImageZoom();
+            }
             
             if (screen !== 'main') {
                 history.pushState({ screen: screen }, '', '');
@@ -443,7 +376,6 @@
             const elapsed = getElapsedTime();
             document.getElementById('timer-display').textContent = formatTime(elapsed);
             
-            // 100분 초과 체크
             if (elapsed >= maxTime && isRunning && !timerEnded) {
                 timerEnded = true;
                 clearInterval(timerInterval);
@@ -462,7 +394,6 @@
             const btn = document.getElementById('start-btn');
             
             if (isRunning) {
-                // 일시정지
                 clearInterval(timerInterval);
                 pausedElapsed = getElapsedTime();
                 startTime = null;
@@ -470,7 +401,6 @@
                 btn.textContent = '▶ 시작';
                 btn.className = 'btn btn-start';
             } else {
-                // 시작
                 if (getElapsedTime() < maxTime) {
                     startTime = Date.now();
                     isRunning = true;
@@ -478,7 +408,6 @@
                     btn.textContent = '⏸ 일시정지';
                     btn.className = 'btn btn-pause';
                     
-                    // 기존 인터벌 클리어
                     if (timerInterval) {
                         clearInterval(timerInterval);
                     }
@@ -556,19 +485,19 @@
         }
 
         function goBackFromImage() {
+            resetImageZoom();
             currentScreen = 'main';
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById('main-screen').classList.add('active');
         }
 
-        // 페이지 복귀 시 시간 업데이트 (여러 이벤트로 확실하게)
+        // 페이지 복귀 시 시간 업데이트
         function handlePageResume() {
             if (isRunning) {
                 updateDisplay();
             }
         }
 
-        // 다양한 이벤트로 페이지 복귀 감지
         document.addEventListener('visibilitychange', function() {
             if (!document.hidden) {
                 handlePageResume();
@@ -578,87 +507,64 @@
         window.addEventListener('focus', handlePageResume);
         window.addEventListener('pageshow', handlePageResume);
         
-        // 화면 터치 시에도 업데이트
         document.addEventListener('touchstart', function() {
             if (isRunning) {
                 updateDisplay();
             }
         }, { passive: true });
 
-        // 전체화면 뷰어 열기
-        function openViewer() {
-            const viewer = document.getElementById('fullscreen-viewer');
-            const fullscreenImg = document.getElementById('fullscreen-image');
-            const originalImg = document.querySelector('.image-container img');
-            
-            fullscreenImg.src = originalImg.src;
-            viewer.classList.add('active');
-            document.body.style.overflow = 'hidden';
-            
+        // ===== 이미지 핀치 줌 기능 =====
+        const imageContainer = document.getElementById('image-container');
+        const strategyImage = document.getElementById('strategy-image');
+
+        function updateImageTransform() {
+            strategyImage.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
+        }
+
+        function resetImageZoom() {
             scale = 1;
             posX = 0;
             posY = 0;
-            updateTransform();
+            lastScale = 1;
+            updateImageTransform();
         }
 
-        // 전체화면 뷰어 닫기
-        function closeViewer() {
-            const viewer = document.getElementById('fullscreen-viewer');
-            viewer.classList.remove('active');
-            document.body.style.overflow = 'auto';
-            
-            scale = 1;
-            posX = 0;
-            posY = 0;
-        }
-
-        // 이미지 변환 적용
-        function updateTransform() {
-            const img = document.getElementById('fullscreen-image');
-            img.style.transform = `translate(${posX}px, ${posY}px) scale(${scale})`;
-        }
-
-        // 두 손가락 사이 거리 계산
         function getDistance(touches) {
             const dx = touches[0].clientX - touches[1].clientX;
             const dy = touches[0].clientY - touches[1].clientY;
             return Math.sqrt(dx * dx + dy * dy);
         }
 
-        // 터치 이벤트 설정
-        const viewer = document.getElementById('fullscreen-viewer');
-
-        viewer.addEventListener('touchstart', function(e) {
-            if (e.target === document.querySelector('.close-btn')) return;
-            
+        // 터치 시작
+        imageContainer.addEventListener('touchstart', function(e) {
             if (e.touches.length === 2) {
                 e.preventDefault();
                 startDistance = getDistance(e.touches);
                 lastScale = scale;
-            } else if (e.touches.length === 1) {
+            } else if (e.touches.length === 1 && scale > 1) {
                 startX = e.touches[0].clientX - posX;
                 startY = e.touches[0].clientY - posY;
                 isDragging = true;
             }
         }, { passive: false });
 
-        viewer.addEventListener('touchmove', function(e) {
-            if (e.target === document.querySelector('.close-btn')) return;
-            
+        // 터치 이동
+        imageContainer.addEventListener('touchmove', function(e) {
             if (e.touches.length === 2) {
                 e.preventDefault();
                 const currentDistance = getDistance(e.touches);
                 scale = Math.min(Math.max(lastScale * (currentDistance / startDistance), 1), 5);
-                updateTransform();
+                updateImageTransform();
             } else if (e.touches.length === 1 && isDragging && scale > 1) {
                 e.preventDefault();
                 posX = e.touches[0].clientX - startX;
                 posY = e.touches[0].clientY - startY;
-                updateTransform();
+                updateImageTransform();
             }
         }, { passive: false });
 
-        viewer.addEventListener('touchend', function(e) {
+        // 터치 종료
+        imageContainer.addEventListener('touchend', function(e) {
             isDragging = false;
             lastScale = scale;
             
@@ -666,15 +572,13 @@
                 scale = 1;
                 posX = 0;
                 posY = 0;
-                updateTransform();
+                updateImageTransform();
             }
         });
 
         // 더블탭으로 확대/축소
         let lastTap = 0;
-        viewer.addEventListener('touchend', function(e) {
-            if (e.target === document.querySelector('.close-btn')) return;
-            
+        imageContainer.addEventListener('touchend', function(e) {
             const currentTime = new Date().getTime();
             const tapLength = currentTime - lastTap;
             
@@ -687,23 +591,18 @@
                 } else {
                     scale = 2.5;
                 }
-                updateTransform();
+                updateImageTransform();
                 lastScale = scale;
             }
             lastTap = currentTime;
         });
 
-        document.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closeViewer();
-            }
-        });
-
-        viewer.addEventListener('wheel', function(e) {
+        // PC에서 마우스 휠로 확대/축소
+        imageContainer.addEventListener('wheel', function(e) {
             e.preventDefault();
             const delta = e.deltaY > 0 ? 0.9 : 1.1;
             scale = Math.min(Math.max(scale * delta, 1), 5);
-            updateTransform();
+            updateImageTransform();
             lastScale = scale;
         }, { passive: false });
 
