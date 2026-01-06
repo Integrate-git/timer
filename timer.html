@@ -217,6 +217,12 @@
             margin-bottom: 10px;
         }
 
+        .timer-hint {
+            color: #999;
+            font-size: 13px;
+            margin-bottom: 5px;
+        }
+
         .timer-buttons {
             display: flex;
             gap: 10px;
@@ -332,9 +338,9 @@
         <div id="image-screen" class="screen">
             <h1>단계별 전략 수립</h1>
             <div class="image-container">
-                <img src="단계별 전략.png" alt="단계별 전략 20260106" onclick="openViewer()">
+                <img src="단계별 전략.png" alt="단계별 전략" onclick="openViewer()">
             </div>
-            <button class="btn btn-back" onclick="showScreen('main')">
+            <button class="btn btn-back" onclick="goBackFromImage()">
                 ← 뒤로 가기
             </button>
         </div>
@@ -342,6 +348,7 @@
         <!-- 타이머 화면 -->
         <div id="timer-screen" class="screen">
             <h1>⏱️ 100분 타이머</h1>
+            <p class="timer-hint">💡 시험 시작 전에 먼저 [시작], [기록] 버튼을 눌러서 테스트해보세요</p>
             <p class="timer-label">경과 시간</p>
             <div class="timer-display" id="timer-display">00:00</div>
             <div class="timer-buttons">
@@ -392,6 +399,9 @@
         let timestamps = [];
         const recordLabels = ['1회독 단계', '2회독 단계', '검토/마무리', '풀이 종료'];
 
+        // 현재 화면 상태
+        let currentScreen = 'main';
+
         // 핀치 줌 관련 변수
         let scale = 1;
         let posX = 0;
@@ -405,6 +415,12 @@
         function showScreen(screen) {
             document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
             document.getElementById(screen + '-screen').classList.add('active');
+            currentScreen = screen;
+            
+            // 히스토리에 상태 추가 (뒤로가기 지원)
+            if (screen !== 'main') {
+                history.pushState({ screen: screen }, '', '');
+            }
         }
 
         function formatTime(seconds) {
@@ -515,7 +531,15 @@
             
             document.getElementById('record-btn').disabled = false;
             
-            showScreen('main');
+            currentScreen = 'main';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-screen').classList.add('active');
+        }
+
+        function goBackFromImage() {
+            currentScreen = 'main';
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('main-screen').classList.add('active');
         }
 
         // 전체화면 뷰어 열기
@@ -639,6 +663,18 @@
             updateTransform();
             lastScale = scale;
         }, { passive: false });
+
+        // 브라우저/핸드폰 뒤로가기 버튼 지원
+        window.addEventListener('popstate', function(e) {
+            if (currentScreen === 'timer') {
+                goBackFromTimer();
+            } else if (currentScreen === 'image') {
+                goBackFromImage();
+            }
+        });
+
+        // 페이지 로드 시 초기 히스토리 상태 설정
+        history.replaceState({ screen: 'main' }, '', '');
     </script>
 </body>
 </html>
