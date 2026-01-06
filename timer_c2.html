@@ -267,6 +267,7 @@
             text-decoration: none;
             background: #fff;
             transition: transform .12s ease, box-shadow .12s ease;
+            color: #d1d5db;
         }
         .ig-sns:hover {
             transform: translateY(-1px);
@@ -275,7 +276,22 @@
         .ig-sns svg {
             width: 20px;
             height: 20px;
-            fill: #111;
+            fill: currentColor;
+            stroke: currentColor;
+        }
+
+        /* Tailwind-like utility classes used for SNS 아이콘 */
+        .text-gray-300 {
+            color: #d1d5db;
+        }
+        .hover\:text\[\#E1306C\]:hover {
+            color: #E1306C;
+        }
+        .hover\:text\[\#03C75A\]:hover {
+            color: #03C75A;
+        }
+        .transition-colors {
+            transition: color 0.2s ease;
         }
 
         .ig-footer__menu,
@@ -382,36 +398,12 @@
             </button>
 
             <!-- ✅ 메인 화면 하단: 회사/SNS/교재 링크 (메인 화면에서만 표시) -->
-                        <footer class="ig-footer" role="contentinfo" aria-label="인터그레이트 푸터">
+            <footer class="ig-footer" role="contentinfo" aria-label="인터그레이트 푸터">
                 <!-- SNS 바로가기 -->
                 <div class="ig-footer__sns" aria-label="SNS 바로가기">
-                    <a
-                        class="ig-sns"
-                        href="https://www.instagram.com/lhw_math/"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="인스타그램으로 이동"
-                        title="Instagram"
-                    >
-                        <!-- Instagram SVG (simple) -->
-                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9A5.5 5.5 0 0 1 16.5 22h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2Zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9A3.5 3.5 0 0 0 20 16.5v-9A3.5 3.5 0 0 0 16.5 4h-9ZM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10Zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6Zm5.6-2.2a1.1 1.1 0 1 1 0 2.2 1.1 1.1 0 0 1 0-2.2Z" />
-                        </svg>
-                    </a>
+                    <a href="https://www.instagram.com/lhw_math/" target="_blank" rel="noopener noreferrer" class="ig-sns text-gray-300 hover:text-[#E1306C] transition-colors" aria-label="Instagram"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-instagram" aria-hidden="true"><rect width="20" height="20" x="2" y="2" rx="5" ry="5"></rect><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"></line></svg></a>
 
-                    <a
-                        class="ig-sns"
-                        href="https://cafe.naver.com/pnmath"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="네이버 카페로 이동"
-                        title="Naver Cafe"
-                    >
-                        <!-- Naver Cafe: simple 'N' badge SVG -->
-                        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
-                            <path d="M6 3h12a3 3 0 0 1 3 3v12a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3V6a3 3 0 0 1 3-3Zm1.8 15.6V5.4h2.2l4.1 7.1V5.4h2.1v13.2h-2.2l-4.1-7.1v7.1H7.8Z" />
-                        </svg>
-                    </a>
+                    <a href="https://cafe.naver.com/pnmath" target="_blank" rel="noopener noreferrer" class="ig-sns text-gray-300 hover:text-[#03C75A] transition-colors" aria-label="Naver Cafe"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class=""><rect width="24" height="24" rx="4" fill="currentColor"></rect><path d="M15.4 17.5L8.6 7.5H7V17.5H9.8V10.7L16.6 20.7H18.2V7.5H15.4V17.5Z" fill="white"></path></svg></a>
                 </div>
 
                 <!-- 회사 정보 -->
