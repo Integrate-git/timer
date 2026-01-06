@@ -338,7 +338,7 @@
         <!-- 타이머 화면 -->
         <div id="timer-screen" class="screen">
             <h1>⏱️ 100분 타이머</h1>
-            <p class="timer-hint">💡 시험 시작 전에 먼저 [시작], [기록](4회)을 눌러서 테스트해보세요</p>
+            <p class="timer-hint">💡 시험 시작 전에 먼저 [시작], [기록] 버튼을 눌러서 테스트해보세요</p>
             <p class="timer-label">경과 시간</p>
             <div class="timer-display" id="timer-display">00:00</div>
             <div class="timer-buttons">
@@ -371,7 +371,7 @@
     <script>
         // 타이머 관련 변수
         let timeElapsed = 0;
-        const maxTime = 10;
+        const maxTime = 100 * 60;
         let timerInterval = null;
         let isRunning = false;
 
