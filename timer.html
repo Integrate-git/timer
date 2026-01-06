@@ -96,6 +96,19 @@
             flex: 1;
         }
 
+        .btn-record {
+            background: #17a2b8;
+            color: white;
+            flex: 1;
+        }
+
+        .btn-record:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
         .screen {
             display: none;
         }
@@ -215,6 +228,60 @@
             font-size: 16px;
         }
 
+        /* 타임스탬프 기록 영역 */
+        .timestamp-section {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 12px;
+        }
+
+        .timestamp-title {
+            font-size: 16px;
+            color: #666;
+            margin-bottom: 10px;
+        }
+
+        .timestamp-list {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .timestamp-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 15px;
+            background: white;
+            border-radius: 8px;
+            border-left: 4px solid #17a2b8;
+        }
+
+        .timestamp-item.empty {
+            color: #aaa;
+            border-left-color: #ddd;
+            justify-content: center;
+        }
+
+        .timestamp-number {
+            font-weight: 600;
+            color: #17a2b8;
+        }
+
+        .timestamp-time {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+        }
+
+        .record-count {
+            font-size: 14px;
+            color: #999;
+            margin-top: 10px;
+        }
+
         .emoji {
             font-size: 24px;
         }
@@ -235,6 +302,14 @@
             .btn {
                 padding: 15px;
                 font-size: 16px;
+            }
+
+            .timer-buttons {
+                flex-wrap: wrap;
+            }
+
+            .timer-buttons .btn {
+                flex: 1 1 45%;
             }
         }
     </style>
@@ -267,16 +342,29 @@
         <!-- 타이머 화면 -->
         <div id="timer-screen" class="screen">
             <h1>⏱️ 100분 타이머</h1>
-            <p class="timer-label">남은 시간</p>
-            <div class="timer-display" id="timer-display">100:00</div>
+            <p class="timer-label">경과 시간</p>
+            <div class="timer-display" id="timer-display">00:00</div>
             <div class="timer-buttons">
                 <button class="btn btn-start" id="start-btn" onclick="toggleTimer()">
                     ▶ 시작
+                </button>
+                <button class="btn btn-record" id="record-btn" onclick="recordTimestamp()">
+                    📌 기록
                 </button>
                 <button class="btn btn-reset" onclick="resetTimer()">
                     ↺ 리셋
                 </button>
             </div>
+
+            <!-- 타임스탬프 기록 영역 -->
+            <div class="timestamp-section">
+                <p class="timestamp-title">📋 기록된 타임스탬프</p>
+                <div class="timestamp-list" id="timestamp-list">
+                    <div class="timestamp-item empty">기록 없음</div>
+                </div>
+                <p class="record-count" id="record-count">남은 기록 횟수: 3회</p>
+            </div>
+
             <button class="btn btn-back" onclick="goBackFromTimer()">
                 ← 뒤로 가기
             </button>
@@ -294,9 +382,14 @@
 
     <script>
         // 타이머 관련 변수
-        let timeLeft = 100 * 60;
+        let timeElapsed = 0; // 0부터 시작
+        const maxTime = 100 * 60; // 100분 = 6000초
         let timerInterval = null;
         let isRunning = false;
+
+        // 타임스탬프 관련 변수
+        const maxRecords = 3;
+        let timestamps = [];
 
         // 핀치 줌 관련 변수
         let scale = 1;
@@ -322,7 +415,7 @@
         }
 
         function updateDisplay() {
-            document.getElementById('timer-display').textContent = formatTime(timeLeft);
+            document.getElementById('timer-display').textContent = formatTime(timeElapsed);
         }
 
         function toggleTimer() {
@@ -334,32 +427,75 @@
                 btn.textContent = '▶ 시작';
                 btn.className = 'btn btn-start';
             } else {
-                if (timeLeft > 0) {
+                if (timeElapsed < maxTime) {
                     isRunning = true;
                     btn.textContent = '⏸ 일시정지';
                     btn.className = 'btn btn-pause';
                     
                     timerInterval = setInterval(() => {
-                        timeLeft--;
+                        timeElapsed++;
                         updateDisplay();
                         
-                        if (timeLeft <= 0) {
+                        if (timeElapsed >= maxTime) {
                             clearInterval(timerInterval);
                             isRunning = false;
                             btn.textContent = '▶ 시작';
                             btn.className = 'btn btn-start';
-                            alert('⏰ 타이머 종료!');
+                            alert('🔔 시험시간이 종료되었습니다.');
                         }
                     }, 1000);
                 }
             }
         }
 
+        function recordTimestamp() {
+            if (timestamps.length >= maxRecords) {
+                alert('최대 기록 횟수(3회)를 초과했습니다.');
+                return;
+            }
+
+            if (!isRunning && timeElapsed === 0) {
+                alert('타이머를 먼저 시작해주세요.');
+                return;
+            }
+
+            timestamps.push(timeElapsed);
+            updateTimestampDisplay();
+        }
+
+        function updateTimestampDisplay() {
+            const listElement = document.getElementById('timestamp-list');
+            const countElement = document.getElementById('record-count');
+            const recordBtn = document.getElementById('record-btn');
+
+            if (timestamps.length === 0) {
+                listElement.innerHTML = '<div class="timestamp-item empty">기록 없음</div>';
+            } else {
+                listElement.innerHTML = timestamps.map((time, index) => `
+                    <div class="timestamp-item">
+                        <span class="timestamp-number">#${index + 1}</span>
+                        <span class="timestamp-time">${formatTime(time)}</span>
+                    </div>
+                `).join('');
+            }
+
+            const remaining = maxRecords - timestamps.length;
+            countElement.textContent = `남은 기록 횟수: ${remaining}회`;
+
+            if (remaining === 0) {
+                recordBtn.disabled = true;
+            } else {
+                recordBtn.disabled = false;
+            }
+        }
+
         function resetTimer() {
             clearInterval(timerInterval);
             isRunning = false;
-            timeLeft = 100 * 60;
+            timeElapsed = 0;
+            timestamps = [];
             updateDisplay();
+            updateTimestampDisplay();
             
             const btn = document.getElementById('start-btn');
             btn.textContent = '▶ 시작';
@@ -369,8 +505,10 @@
         function goBackFromTimer() {
             clearInterval(timerInterval);
             isRunning = false;
-            timeLeft = 100 * 60;
+            timeElapsed = 0;
+            timestamps = [];
             updateDisplay();
+            updateTimestampDisplay();
             
             const btn = document.getElementById('start-btn');
             btn.textContent = '▶ 시작';
