@@ -295,16 +295,16 @@
         .ig-sns--instagram:focus-visible,
         .ig-sns--instagram:active {
             color: #E1306C;
-            border-color: rgba(225, 48, 108, 0.3);
-        }
-        }
-        
-        .ig-sns--naver:hover,
-        .ig-sns--naver:focus-visible,
-        .ig-sns--naver:active {
-            color: #03C75A;
             border-color: rgba(3, 199, 90, 0.35);
         }
+
+        .ig-sns--naver:hover svg,
+        .ig-sns--naver:focus-visible svg,
+        .ig-sns--naver:active svg {
+            fill: #03C75A;
+            stroke: #03C75A;
+        }
+        
         .ig-sns {
             transition: color 0.2s ease, border-color 0.2s ease, transform .12s ease, box-shadow .12s ease;
         }
