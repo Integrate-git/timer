@@ -22,15 +22,21 @@
             padding: 20px;
         }
 
+        /* container는 이제 위치 잡는 역할만 하고, 배경색/그림자는 white-box로 이동 */
         .container {
+            max-width: 600px; /* 모바일 보기에 적당한 폭으로 조정 (기존 1000px는 너무 넓음) */
+            width: 100%;
+            text-align: center;
+        }
+
+        /* 🆕 새로 추가된 하얀색 박스 스타일 */
+        .white-box {
             background: #ffffff;
             border-radius: 20px;
             padding: 40px;
-            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.18);
+            box-shadow: 0 20px 60px rgba(15, 23, 42, 0.10); /* 그림자 강도 약간 조절 */
             border: 1px solid #e2e8f0;
-            max-width: 1000px;
-            width: 100%;
-            text-align: center;
+            margin-bottom: 30px; /* 박스와 아래 푸터 사이 간격 */
         }
 
         h1 {
@@ -40,26 +46,14 @@
             font-weight: bold;
         }
 
-        /* INTEGRATE 섹션 타이틀 */
-        .section-header {
-            margin: 40px 0 20px;
+        /* 🆕 INTEGRATE 섹션 간격 조정용 클래스 */
+        .integrate-title {
+            margin-top: 60px; /* 1. 요청하신 대로 위쪽 간격을 넓힘 */
+            margin-bottom: 20px;
             font-size: 22px;
-            font-weight: bold;
+            font-weight: 800;
             color: #0f172a;
-            position: relative;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 15px;
-        }
-        
-        .section-header::before,
-        .section-header::after {
-            content: '';
-            height: 2px;
-            background: #e2e8f0;
-            flex: 1;
-            border-radius: 2px;
+            letter-spacing: 1px;
         }
 
         .btn {
@@ -98,7 +92,6 @@
             color: white;
         }
 
-        /* 버튼 3: Q&A (파스텔 하늘색) */
         .btn-cafe {
             background: #bfdbfe;
             color: #1e3a8a;
@@ -109,10 +102,9 @@
             box-shadow: 0 8px 25px rgba(191, 219, 254, 0.6);
         }
 
-        /* 🆕 버튼 3.5: 정오표 (파스텔 핑크) */
         .btn-correction {
-            background: #fecaca; /* 부드러운 핑크 (Tailwind Red 200) */
-            color: #991b1b; /* 짙은 빨강 글씨 */
+            background: #fecaca;
+            color: #991b1b;
             margin-bottom: 15px;
         }
         .btn-correction:hover {
@@ -120,7 +112,6 @@
             box-shadow: 0 8px 25px rgba(252, 165, 165, 0.6);
         }
 
-        /* 버튼 4: 교재 구매 (다크 네이비) */
         .btn-book {
             background: #1e293b;
             color: white;
@@ -132,56 +123,17 @@
             margin-top: 20px;
         }
 
-        .btn-start {
-            background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-            color: white;
-            flex: 1;
-        }
+        .btn-start { background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%); color: white; flex: 1; }
+        .btn-pause { background: #fbbf24; color: #0f172a; flex: 1; }
+        .btn-reset { background: #ef4444; color: white; flex: 1; }
+        .btn-record { background: #0ea5e9; color: white; flex: 1; }
+        .btn-record:disabled { background: #ccc; cursor: not-allowed; transform: none; box-shadow: none; }
 
-        .btn-pause {
-            background: #fbbf24;
-            color: #0f172a;
-            flex: 1;
-        }
+        .screen { display: none; }
+        .screen.active { display: block; }
 
-        .btn-reset {
-            background: #ef4444;
-            color: white;
-            flex: 1;
-        }
-
-        .btn-record {
-            background: #0ea5e9;
-            color: white;
-            flex: 1;
-        }
-
-        .btn-record:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-            transform: none;
-            box-shadow: none;
-        }
-
-        .screen {
-            display: none;
-        }
-
-        .screen.active {
-            display: block;
-        }
-
-        .image-container img {
-            width: 100%;
-            border-radius: 12px;
-            margin-bottom: 15px;
-        }
-
-        .zoom-hint {
-            color: #999;
-            font-size: 14px;
-            margin-bottom: 15px;
-        }
+        .image-container img { width: 100%; border-radius: 12px; margin-bottom: 15px; }
+        .zoom-hint { color: #999; font-size: 14px; margin-bottom: 15px; }
 
         .timer-display {
             font-size: 72px;
@@ -192,257 +144,117 @@
             text-shadow: 2px 2px 4px rgba(15,23,42,0.08);
         }
 
-        .timer-label {
-            color: #334155;
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
+        .timer-label { color: #334155; font-size: 18px; margin-bottom: 10px; }
+        .timer-hint { color: #475569; font-size: 13px; margin-bottom: 5px; }
+        .timer-buttons { display: flex; gap: 10px; margin-bottom: 10px; }
+        .timer-buttons .btn { padding: 14px; font-size: 16px; }
 
-        .timer-hint {
-            color: #475569;
-            font-size: 13px;
-            margin-bottom: 5px;
-        }
-
-        .timer-buttons {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 10px;
-        }
-
-        .timer-buttons .btn {
-            padding: 14px;
-            font-size: 16px;
-        }
-
-        /* 타임스탬프 기록 영역 */
         .timestamp-section {
-            margin-top: 20px;
-            padding: 15px;
-            background: #f8fafc;
-            border-radius: 12px;
-            border: 1px solid #e2e8f0;
+            margin-top: 20px; padding: 15px; background: #f8fafc;
+            border-radius: 12px; border: 1px solid #e2e8f0;
         }
-
-        .timestamp-title {
-            font-size: 16px;
-            color: #334155;
-            margin-bottom: 10px;
-        }
-
-        .timestamp-list {
-            display: flex;
-            flex-direction: column;
-            gap: 8px;
-        }
-
+        .timestamp-title { font-size: 16px; color: #334155; margin-bottom: 10px; }
+        .timestamp-list { display: flex; flex-direction: column; gap: 8px; }
         .timestamp-item {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 10px 15px;
-            background: white;
-            border-radius: 8px;
-            border-left: 4px solid #0ea5e9;
-            box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 15px; background: white; border-radius: 8px;
+            border-left: 4px solid #0ea5e9; box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
         }
-
-        .timestamp-item.empty {
-            color: #94a3b8;
-            border-left-color: #cbd5e1;
-            justify-content: center;
-        }
-
-        .timestamp-number {
-            font-weight: 600;
-            color: #0f172a;
-        }
-
-        .timestamp-time {
-            font-family: 'Courier New', monospace;
-            font-size: 18px;
-            font-weight: bold;
-            color: #0f172a;
-        }
-
-        .record-count {
-            font-size: 14px;
-            color: #64748b;
-            margin-top: 10px;
-        }
-
-        .emoji {
-            font-size: 24px;
-        }
+        .timestamp-item.empty { color: #94a3b8; border-left-color: #cbd5e1; justify-content: center; }
+        .timestamp-number { font-weight: 600; color: #0f172a; }
+        .timestamp-time { font-family: 'Courier New', monospace; font-size: 18px; font-weight: bold; color: #0f172a; }
+        .record-count { font-size: 14px; color: #64748b; margin-top: 10px; }
+        .emoji { font-size: 24px; }
 
         @media (max-width: 480px) {
-            .container {
-                padding: 25px;
-            }
-
-            h1 {
-                font-size: 22px;
-            }
-
-            .timer-display {
-                font-size: 50px;
-            }
-
-            .btn {
-                padding: 15px;
-                font-size: 16px;
-            }
-
-            .timer-buttons {
-                flex-wrap: wrap;
-            }
-
-            .timer-buttons .btn {
-                flex: 1 1 45%;
-            }
-            
-            .section-header {
-                font-size: 18px;
-            }
+            .white-box { padding: 25px; }
+            h1 { font-size: 22px; }
+            .timer-display { font-size: 50px; }
+            .btn { padding: 15px; font-size: 16px; }
+            .timer-buttons { flex-wrap: wrap; }
+            .timer-buttons .btn { flex: 1 1 45%; }
         }
 
-        /* ===== integrate.kr 하단 푸터 구성 ===== */
+        /* ===== 2. 하단 정보(푸터) 스타일 수정 ===== */
         .ig-footer {
-            margin-top: 22px;
-            padding: 18px 12px 16px;
-            border-top: 1px solid #e2e8f0;
+            /* 상단 테두리 제거 (박스 밖으로 나왔으므로) */
+            margin-top: 0; 
+            padding: 0 12px 20px;
         }
 
         .ig-footer__sns {
-            display: flex;
-            gap: 10px;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 12px;
+            display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 15px;
         }
 
         .ig-sns {
-            width: 40px;
-            height: 40px;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 999px;
+            width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center;
+            border-radius: 999px; text-decoration: none;
+            /* 배경색을 흰색으로 변경하여 회색 배경 위에서 돋보이게 함 */
+            background: #ffffff; 
             border: 1px solid #e2e8f0;
-            text-decoration: none;
-            background: #f8fafc;
-            transition: transform .12s ease, box-shadow .12s ease;
-            color: #94a3b8;
+            transition: transform .12s ease, box-shadow .12s ease; color: #94a3b8;
         }
-        .ig-sns:hover,
-        .ig-sns:focus-visible {
-            transform: translateY(-1px);
-            box-shadow: 0 6px 18px rgba(15, 23, 42, .08);
-        }
-        .ig-sns svg {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-            stroke: currentColor;
-        }
-
-        .ig-sns--instagram:hover,
-        .ig-sns--instagram:focus-visible,
-        .ig-sns--instagram:active {
-            color: #E1306C;
-            border-color: currentColor;
-        }
-
-        .ig-sns--naver:hover,
-        .ig-sns--naver:focus-visible,
-        .ig-sns--naver:active {
-            color: #03C75A;
-            border-color: #03C75A;
-        }
+        .ig-sns:hover, .ig-sns:focus-visible { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(15, 23, 42, .08); }
+        .ig-sns svg { width: 20px; height: 20px; fill: currentColor; stroke: currentColor; }
+        .ig-sns--instagram:hover { color: #E1306C; border-color: currentColor; }
+        .ig-sns--naver:hover { color: #03C75A; border-color: #03C75A; }
         
-        .ig-sns {
-            transition: color 0.2s ease, border-color 0.2s ease, transform .12s ease, box-shadow .12s ease;
-        }
-
         .ig-footer__info {
-            margin: 12px 0 10px;
-            display: grid;
-            gap: 6px;
-            color: rgba(0,0,0,.70);
-            font-size: 12.5px;
-            line-height: 1.35;
-            text-align: center;
+            margin: 12px 0 10px; display: grid; gap: 6px;
+            color: #64748b; /* 글자색을 약간 더 진하게 */
+            font-size: 12.5px; line-height: 1.35; text-align: center;
         }
         .ig-footer__info p { margin: 0; }
-        .ig-footer__info a {
-            color: inherit;
-            text-decoration: underline;
-            text-underline-offset: 2px;
-        }
+        .ig-footer__info a { color: inherit; text-decoration: underline; text-underline-offset: 2px; }
 
         .ig-footer__copyright {
-            margin: 0;
-            font-size: 12.5px;
-            color: rgba(0,0,0,.65);
-            text-align: center;
+            margin: 0; font-size: 12.5px; color: #94a3b8; text-align: center;
         }
 
-        @media (max-width: 480px) {
-            .ig-footer {
-                padding: 16px 10px 14px;
-            }
-            .ig-footer__info,
-            .ig-footer__copyright {
-                font-size: 12px;
-            }
-        }
-
-        body.timer-no-zoom {
-            touch-action: pan-y;
-        }
+        body.timer-no-zoom { touch-action: pan-y; }
     </style>
 </head>
 <body>
     <div class="container">
+        
         <div id="main-screen" class="screen active">
-            <h1>한완기 실전편</h1>
-            
-            <button class="btn btn-image" onclick="showScreen('image')">
-                단계별 전략 수립
-            </button>
-            <button class="btn btn-timer" onclick="showScreen('timer')">
-                <span class="emoji">⏱️</span>
-                100분 타이머
-            </button>
+            <div class="white-box">
+                <h1>한완기 실전편</h1>
+                
+                <button class="btn btn-image" onclick="showScreen('image')">
+                    단계별 전략 수립
+                </button>
+                <button class="btn btn-timer" onclick="showScreen('timer')">
+                    <span class="emoji">⏱️</span>
+                    100분 타이머
+                </button>
 
-            <h1>INTEGRATE</h1>
-            
-            <a href="https://https://cafe.naver.com/f-e/cafes/23380319/menus/427" target="_blank" class="btn btn-cafe">
-                <span class="emoji">❔</span>
-                이해원연구소 Q&A
-            </a>
+                <h1 class="integrate-title">INTEGRATE</h1>
+                
+                <a href="https://cafe.naver.com/f-e/cafes/23380319/menus/427?t=1756279915781" target="_blank" class="btn btn-cafe">
+                    <span class="emoji">❔</span>
+                    이해원연구소 Q&A
+                </a>
 
-            <a href="https://sdijbooks.com/detail/ser/?SER_CD=384" target="_blank" class="btn btn-correction">
-                <span class="emoji">📢</span>
-                정오표
-            </a>
+                <a href="https://sdijbooks.com/detail/ser/?SER_CD=384" target="_blank" class="btn btn-correction">
+                    <span class="emoji">📢</span>
+                    정오표
+                </a>
 
-            <a href="https://www.sdijbooks.com/detail/ser/?SER_CD=383" target="_blank" class="btn btn-book">
-                <span class="emoji">📚</span>
-                2027 한권으로 완성하는 기출
-            </a>
-
-            <footer class="ig-footer" role="contentinfo" aria-label="인터그레이트 푸터">
-                <div class="ig-footer__sns" aria-label="SNS 바로가기">
-                    <a href="https://www.instagram.com/lhw_math/" target="_blank" rel="noopener noreferrer" class="ig-sns ig-sns--instagram" aria-label="Instagram">
+                <a href="https://www.sdijbooks.com/detail/ser/?SER_CD=383" target="_blank" class="btn btn-book">
+                    <span class="emoji">📚</span>
+                    2027 한권으로 완성하는 기출
+                </a>
+            </div> <footer class="ig-footer" role="contentinfo">
+                <div class="ig-footer__sns">
+                    <a href="https://www.instagram.com/lhw_math/" target="_blank" class="ig-sns ig-sns--instagram">
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                             <rect x="3" y="3" width="18" height="18" rx="5" ry="5" fill="none" stroke="currentColor" stroke-width="2"></rect>
                             <circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"></circle>
                             <circle cx="17" cy="7" r="1.4" fill="currentColor"></circle>
                         </svg>
                     </a>
-
-                    <a href="https://cafe.naver.com/pnmath" target="_blank" rel="noopener noreferrer" class="ig-sns ig-sns--naver" aria-label="Naver Cafe">
+                    <a href="https://cafe.naver.com/pnmath" target="_blank" class="ig-sns ig-sns--naver">
                         <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
                             <rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"></rect>
                             <path d="M7.5 17.5V6.5h3.1l3.9 6.6V6.5h3v11h-3.1l-3.9-6.6v6.6h-3z" fill="currentColor"></path>
@@ -450,7 +262,7 @@
                     </a>
                 </div>
 
-                <div class="ig-footer__info" aria-label="회사 정보">
+                <div class="ig-footer__info">
                     <p>주소 : 서울특별시 강남구 선릉로 608 (삼성동, 선진빌딩 6층)</p>
                     <p>㈜ 인터그레이트 | 대표이사: 이해원</p>
                     <p>사업자등록번호: 401-87-02099</p>
@@ -464,45 +276,42 @@
         </div>
 
         <div id="image-screen" class="screen">
-            <h1>단계별 전략 수립</h1>
-            <p class="zoom-hint">🔍 두 손가락으로 페이지 전체를 확대/축소할 수 있어요</p>
-            <div class="image-container">
-                <img src="단계별 전략_v2.png" alt="단계별 전략">
-            <button class="btn btn-back" onclick="goBackToMain()">
-                ← 뒤로 가기
-            </button>
+            <div class="white-box">
+                <h1>단계별 전략 수립</h1>
+                <p class="zoom-hint">🔍 두 손가락으로 페이지 전체를 확대/축소할 수 있어요</p>
+                <div class="image-container">
+                    <img src="단계별 전략_v2.png" alt="단계별 전략">
+                    <button class="btn btn-back" onclick="goBackToMain()">
+                        ← 뒤로 가기
+                    </button>
+                </div>
             </div>
         </div>
 
         <div id="timer-screen" class="screen">
-            <h1>⏱️ 100분 타이머</h1>
-            <p class="timer-hint">💡 시험 시작 전에 먼저 [시작], [기록] 버튼을 눌러서 테스트해보세요</p>
-            <p class="timer-label">경과 시간</p>
-            <div class="timer-display" id="timer-display">00:00</div>
-            <div class="timer-buttons">
-                <button class="btn btn-start" id="start-btn" onclick="toggleTimer()">
-                    ▶ 시작
-                </button>
-                <button class="btn btn-record" id="record-btn" onclick="recordTimestamp()">
-                    📌 기록
-                </button>
-                <button class="btn btn-reset" onclick="resetTimer()">
-                    ↺ 리셋
-                </button>
-            </div>
-
-            <div class="timestamp-section">
-                <p class="timestamp-title">📋 기록된 타임스탬프</p>
-                <div class="timestamp-list" id="timestamp-list">
-                    <div class="timestamp-item empty">기록 없음</div>
+            <div class="white-box">
+                <h1>⏱️ 100분 타이머</h1>
+                <p class="timer-hint">💡 시험 시작 전에 먼저 [시작], [기록] 버튼을 눌러서 테스트해보세요</p>
+                <p class="timer-label">경과 시간</p>
+                <div class="timer-display" id="timer-display">00:00</div>
+                <div class="timer-buttons">
+                    <button class="btn btn-start" id="start-btn" onclick="toggleTimer()">▶ 시작</button>
+                    <button class="btn btn-record" id="record-btn" onclick="recordTimestamp()">📌 기록</button>
+                    <button class="btn btn-reset" onclick="resetTimer()">↺ 리셋</button>
                 </div>
-                <p class="record-count" id="record-count">남은 기록 횟수: 4회</p>
-            </div>
 
-            <button class="btn btn-back" onclick="goBackToMain()">
-                ← 뒤로 가기
-            </button>
+                <div class="timestamp-section">
+                    <p class="timestamp-title">📋 기록된 타임스탬프</p>
+                    <div class="timestamp-list" id="timestamp-list">
+                        <div class="timestamp-item empty">기록 없음</div>
+                    </div>
+                    <p class="record-count" id="record-count">남은 기록 횟수: 4회</p>
+                </div>
+
+                <button class="btn btn-back" onclick="goBackToMain()">← 뒤로 가기</button>
+            </div>
         </div>
+
     </div>
 
     <script>
