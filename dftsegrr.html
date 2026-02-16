@@ -4,170 +4,61 @@
     <meta charset="UTF-8">
     <meta id="viewport-meta" name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>한완기 실전편 전략 수립 (Dark Mode & Flip)</title>
+    
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
     <style>
         /* 🎨 [다크모드 변수 설정] */
         :root {
-            --bg-color: #eef2f7;
-            --box-bg: #ffffff;
-            --text-main: #0f172a;
-            --text-sub: #64748b;
-            --border-color: #e2e8f0;
-            --timestamp-bg: #f8fafc;
-            --timestamp-item: #ffffff;
-            --book-bg: #e2e8f0;
-            --theme-btn-bg: #ffffff;
-            --theme-btn-text: #0f172a;
-            /* 타이머 기본 색상 변수 */
-            --timer-color: #10b981; 
-            --timer-glow: rgba(16, 185, 129, 0.2);
+            --bg-color: #eef2f7; --box-bg: #ffffff; --text-main: #0f172a; --text-sub: #64748b;
+            --border-color: #e2e8f0; --timestamp-bg: #f8fafc; --timestamp-item: #ffffff;
+            --book-bg: #e2e8f0; --theme-btn-bg: #ffffff; --theme-btn-text: #0f172a;
+            --timer-color: #10b981; --timer-glow: rgba(16, 185, 129, 0.2);
         }
-
         body.dark-mode {
-            --bg-color: #121212;
-            --box-bg: #1e293b;
-            --text-main: #f1f5f9;
-            --text-sub: #94a3b8;
-            --border-color: #334155;
-            --timestamp-bg: #0f172a;
-            --timestamp-item: #1e293b;
-            --book-bg: #334155;
-            --theme-btn-bg: #334155;
-            --theme-btn-text: #f1f5f9;
+            --bg-color: #121212; --box-bg: #1e293b; --text-main: #f1f5f9; --text-sub: #94a3b8;
+            --border-color: #334155; --timestamp-bg: #0f172a; --timestamp-item: #1e293b;
+            --book-bg: #334155; --theme-btn-bg: #334155; --theme-btn-text: #f1f5f9;
         }
-
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        
         body { 
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            background: var(--bg-color);
-            color: var(--text-main); 
-            min-height: 100vh; 
-            display: flex; 
-            flex-direction: column;
-            align-items: center; 
-            padding: 20px;
-            touch-action: manipulation; 
-            -webkit-text-size-adjust: 100%;
-            transition: background-color 0.4s, color 0.4s;
+            background: var(--bg-color); color: var(--text-main); min-height: 100vh; 
+            display: flex; flex-direction: column; align-items: center; padding: 20px;
+            touch-action: manipulation; -webkit-text-size-adjust: 100%; transition: background-color 0.4s, color 0.4s;
         }
+        .container { max-width: 600px; width: 100%; text-align: center; position: relative; display: flex; flex-direction: column; align-items: center; }
         
-        .container { 
-            max-width: 600px; 
-            width: 100%; 
-            text-align: center; 
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-
         /* 🌙 [다크모드 토글 버튼] */
-        .theme-toggle {
-            position: absolute;
-            top: -10px;
-            right: 0;
-            background: var(--theme-btn-bg);
-            color: var(--theme-btn-text);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            padding: 8px 16px;
-            font-size: 13px;
-            font-weight: 600;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s;
-            z-index: 1000;
-        }
+        .theme-toggle { position: absolute; top: -10px; right: 0; background: var(--theme-btn-bg); color: var(--theme-btn-text); border: 1px solid var(--border-color); border-radius: 20px; padding: 8px 16px; font-size: 13px; font-weight: 600; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); transition: all 0.3s; z-index: 1000; }
         .theme-toggle:hover { transform: translateY(-2px); }
+        .main-logo { width: 220px; height: auto; margin-top: 40px; margin-bottom: 20px; transition: all 0.4s; mix-blend-mode: multiply; }
+        body.dark-mode .main-logo { filter: invert(1) hue-rotate(180deg); mix-blend-mode: screen; }
 
-        /* [로고] */
-        .main-logo {
-            width: 220px;
-            height: auto;
-            margin-top: 40px;
-            margin-bottom: 20px;
-            transition: all 0.4s;
-            mix-blend-mode: multiply; 
-        }
-        body.dark-mode .main-logo {
-            filter: invert(1) hue-rotate(180deg); 
-            mix-blend-mode: screen; 
-        }
-
-        /* 📖 [3D 책장 넘기기 (Flip) 컨테이너] */
-        .scene {
-            width: 100%;
-            perspective: 1200px;
-            margin-bottom: 30px;
-            display: block; 
-        }
-        
-        .card {
-            width: 100%;
-            display: grid; 
-            transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1);
-            transform-style: preserve-3d;
-        }
-        
-        .card.is-flipped {
-            transform: rotateY(-180deg);
-        }
-
-        .card__face {
-            grid-area: 1 / 1; 
-            backface-visibility: hidden;
-            background: var(--box-bg); 
-            border-radius: 20px; 
-            padding: 40px; 
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10); 
-            border: 1px solid var(--border-color); 
-            display: flex;
-            flex-direction: column;
-            transition: background-color 0.4s, border-color 0.4s;
-        }
-
+        /* 📖 [3D 책장 넘기기] */
+        .scene { width: 100%; perspective: 1200px; margin-bottom: 30px; display: block; }
+        .card { width: 100%; display: grid; transition: transform 0.8s cubic-bezier(0.4, 0.2, 0.2, 1); transform-style: preserve-3d; }
+        .card.is-flipped { transform: rotateY(-180deg); }
+        .card__face { grid-area: 1 / 1; backface-visibility: hidden; background: var(--box-bg); border-radius: 20px; padding: 40px; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.10); border: 1px solid var(--border-color); display: flex; flex-direction: column; transition: background-color 0.4s, border-color 0.4s; }
         .card__face--front { transform: rotateY(0deg); }
         .card__face--back { transform: rotateY(180deg); }
 
-        h1 { 
-            color: var(--text-main); 
-            margin-bottom: 30px; 
-            font-size: 28px; 
-            font-weight: bold; 
-        }
-
-        /* [버튼 공통 스타일] */
-        .btn { 
-            width: 100%; padding: 18px; font-size: 18px; font-weight: 600; 
-            border: 2px solid transparent; 
-            border-radius: 12px; cursor: pointer; 
-            transition: all 0.2s ease; display: flex; align-items: center; 
-            justify-content: center; gap: 12px; text-decoration: none; 
-            margin-bottom: 15px; touch-action: manipulation;
-        }
+        h1 { color: var(--text-main); margin-bottom: 30px; font-size: 28px; font-weight: bold; }
+        .btn { width: 100%; padding: 18px; font-size: 18px; font-weight: 600; border: 2px solid transparent; border-radius: 12px; cursor: pointer; transition: all 0.2s ease; display: flex; align-items: center; justify-content: center; gap: 12px; text-decoration: none; margin-bottom: 15px; touch-action: manipulation; }
         .btn:hover { transform: translateY(-3px); box-shadow: 0 10px 20px rgba(0,0,0,0.15); filter: brightness(1.1); }
         .btn:active { transform: translateY(0); filter: brightness(1.0); }
 
-        /* 라이트모드 버튼 색상 */
         .btn-purple { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box; color: white; }
         .btn-pink { background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%) border-box; color: white; }
         .btn-mint { background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) border-box; color: white; }
-
-        /* 다크모드 버튼 색상 */
-        body.dark-mode .btn-purple {
-            background: linear-gradient(var(--box-bg), var(--box-bg)) padding-box, linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box;
-            color: #b592ff; 
-        }
-        body.dark-mode .btn-pink {
-            background: linear-gradient(var(--box-bg), var(--box-bg)) padding-box, linear-gradient(135deg, #f093fb 0%, #f5576c 100%) border-box;
-            color: #fca5bb; 
-        }
-        body.dark-mode .btn-mint {
-            background: linear-gradient(var(--box-bg), var(--box-bg)) padding-box, linear-gradient(135deg, #11998e 0%, #38ef7d 100%) border-box;
-            color: #6ee7b7; 
-        }
-
-        /* [조작 버튼] */
+        body.dark-mode .btn-purple { background: linear-gradient(var(--box-bg), var(--box-bg)) padding-box, linear-gradient(135deg, #667eea 0%, #764ba2 100%) border-box; color: #b592ff; }
+        body.dark-mode .btn-pink { background: linear-gradient(var(--box-bg), var(--box-bg)) padding-box, linear-gradient(135deg, #f093fb 0%, #f5576c 100%) border-box; color: #fca5bb; }
+        body.dark-mode .btn-mint { background: linear-gradient(var(--box-bg), var(--box-bg)) padding-box, linear-gradient(135deg, #11998e 0%, #38ef7d 100%) border-box; color: #6ee7b7; }
         .btn-start { background: #28a745; color: white; flex: 1; margin-bottom: 0; }
         .btn-pause { background: #ffc107; color: #333; flex: 1; margin-bottom: 0; }
         .btn-reset { background: #dc3545; color: white; flex: 1; margin-bottom: 0; }
@@ -175,74 +66,27 @@
         .btn-record:disabled { background: var(--border-color); color: var(--text-sub); cursor: not-allowed; transform: none; box-shadow: none; filter: none; }
         .btn-back { background: var(--border-color); color: var(--text-main); margin-top: 20px; }
 
-        /* 📚 [책 표지 버튼 영역] */
         .book-section-title { margin-top: 25px; margin-bottom: 10px; font-size: 14px; color: var(--text-sub); font-weight: bold; }
         .book-container { display: flex; justify-content: space-between; gap: 12px; width: 100%; }
-        .book-link {
-            flex: 1; aspect-ratio: 2 / 3; border-radius: 8px; background-color: var(--book-bg);
-            color: var(--text-main); text-decoration: none; display: flex; align-items: center;
-            justify-content: center; font-size: 13px; font-weight: 600; text-align: center;
-            line-height: 1.4; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s;
-            overflow: hidden; position: relative;
-        }
+        .book-link { flex: 1; aspect-ratio: 2 / 3; border-radius: 8px; background-color: var(--book-bg); color: var(--text-main); text-decoration: none; display: flex; align-items: center; justify-content: center; font-size: 13px; font-weight: 600; text-align: center; line-height: 1.4; box-shadow: 0 4px 8px rgba(0,0,0,0.1); transition: transform 0.3s, box-shadow 0.3s; overflow: hidden; position: relative; }
         .book-link:hover { transform: translateY(-5px); box-shadow: 0 8px 16px rgba(0,0,0,0.2); }
-        .book-link img { position: absolute; width: 100%; height: 100%; object-fit: cover; }
-
-        /* 이미지 컨테이너 */
         .image-container img { width: 100%; border-radius: 12px; margin-bottom: 15px; }
 
-        /* ⏱️ [원형 숨쉬는 타이머 스타일] */
-        .timer-container {
-            position: relative;
-            width: 260px;
-            height: 260px;
-            margin: 20px auto 30px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+        /* ⏱️ [타이머 스타일] */
+        .timer-container { position: relative; width: 260px; height: 260px; margin: 20px auto 30px; display: flex; align-items: center; justify-content: center; }
         .timer-container.theme-mint { --timer-color: #10b981; --timer-glow: rgba(16, 185, 129, 0.25); }
         .timer-container.theme-yellow { --timer-color: #f59e0b; --timer-glow: rgba(245, 158, 11, 0.25); }
         .timer-container.theme-red { --timer-color: #ef4444; --timer-glow: rgba(239, 68, 68, 0.3); }
-
-        .breathing-circle {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            border: 4px solid var(--border-color); 
-            background: transparent;
-            transition: border-color 0.5s ease; 
-            z-index: 0;
-        }
-        .breathing-circle.active {
-            border-color: var(--timer-color);
-            animation: breathe-circle 4s ease-in-out infinite; 
-        }
-
-        @keyframes breathe-circle {
-            0% { transform: scale(1); box-shadow: 0 0 0 0 transparent; opacity: 1; }
-            50% { transform: scale(1.05); box-shadow: 0 0 25px 10px var(--timer-glow); opacity: 0.8; }
-            100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; opacity: 1; }
-        }
-
-        .timer-display {
-            position: relative;
-            z-index: 1; 
-            font-size: 58px;
-            font-weight: bold;
-            color: var(--text-main); /* 🚨 타이머 숫자는 테마 변경 없이 기본 색상 유지 */
-            font-family: 'Courier New', monospace;
-            text-shadow: 2px 2px 4px rgba(15, 23, 42, 0.08);
-            transition: color 1s ease;
-        }
-
+        .breathing-circle { position: absolute; width: 100%; height: 100%; border-radius: 50%; border: 4px solid var(--border-color); background: transparent; transition: border-color 0.5s ease; z-index: 0; }
+        .breathing-circle.active { border-color: var(--timer-color); animation: breathe-circle 3s ease-in-out infinite; }
+        @keyframes breathe-circle { 0% { transform: scale(1); box-shadow: 0 0 0 0 transparent; opacity: 1; } 50% { transform: scale(1.05); box-shadow: 0 0 25px 10px var(--timer-glow); opacity: 0.8; } 100% { transform: scale(1); box-shadow: 0 0 0 0 transparent; opacity: 1; } }
+        .timer-display { position: relative; z-index: 1; font-size: 58px; font-weight: bold; color: var(--text-main); font-family: 'Courier New', monospace; text-shadow: 2px 2px 4px rgba(15, 23, 42, 0.08); transition: color 1s ease; }
+        .timer-container.active-theme .timer-display { color: var(--timer-color); }
         .timer-label { color: var(--text-sub); font-size: 18px; margin-bottom: 10px; }
         .timer-hint { color: var(--text-sub); font-size: 13px; margin-bottom: 5px; }
         .timer-buttons { display: flex; gap: 10px; margin-bottom: 10px; }
         .timer-buttons .btn { padding: 14px; font-size: 16px; margin-bottom: 0;}
 
-        /* 타이머 타임스탬프 기록 창 */
         .timestamp-section { margin-top: 15px; padding: 15px; background: var(--timestamp-bg); border-radius: 12px; border: 1px solid var(--border-color); transition: background-color 0.4s; }
         .timestamp-title { font-size: 16px; color: var(--text-sub); margin-bottom: 10px; }
         .timestamp-list { display: flex; flex-direction: column; gap: 8px; }
@@ -253,38 +97,6 @@
         .record-count { font-size: 14px; color: var(--text-sub); margin-top: 10px; }
         .emoji { font-size: 24px; }
 
-        /* 🎲 [점심 룰렛 전용 스타일] */
-        .lunch-result {
-            padding: 15px;
-            background: var(--timestamp-bg);
-            border-radius: 12px;
-            border: 1px solid var(--border-color);
-            margin-bottom: 15px;
-            font-weight: 600;
-            color: var(--text-sub);
-            transition: all 0.4s ease;
-            font-size: 16px;
-        }
-        .lunch-result.winner-text {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
-            border-color: #10b981;
-            box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
-            transform: scale(1.03);
-            font-size: 20px;
-        }
-        .lunch-canvas-container {
-            display: flex;
-            justify-content: center;
-            margin-bottom: 15px;
-            border-radius: 12px;
-            background: var(--timestamp-bg);
-            border: 1px solid var(--border-color);
-            overflow: hidden; 
-            padding: 10px;
-        }
-
-        /* 푸터 */
         .ig-footer { padding: 0 12px 20px; width: 100%; margin-top: 20px;}
         .ig-footer__sns { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 15px; }
         .ig-sns { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; text-decoration: none; background: var(--box-bg); border: 1px solid var(--border-color); transition: transform .12s ease, box-shadow .12s ease; color: var(--text-sub); }
@@ -298,21 +110,15 @@
         .ig-footer__copyright { margin: 0; font-size: 12.5px; color: var(--text-sub); text-align: center; }
 
         @media (max-width: 480px) {
-            .card__face { padding: 25px; }
-            h1 { font-size: 22px; }
-            .timer-container { width: 240px; height: 240px; }
-            .timer-display { font-size: 48px; }
-            .timer-buttons { flex-wrap: wrap; }
-            .timer-buttons .btn { flex: 1 1 45%; }
-            .book-link { font-size: 11px; }
+            .card__face { padding: 25px; } h1 { font-size: 22px; }
+            .timer-container { width: 240px; height: 240px; } .timer-display { font-size: 48px; }
+            .timer-buttons { flex-wrap: wrap; } .timer-buttons .btn { flex: 1 1 45%; } .book-link { font-size: 11px; }
         }
     </style>
 </head>
 <body>
     <div class="container">
-        
         <button class="theme-toggle" onclick="toggleTheme()" id="themeBtn">🌙 다크 모드</button>
-
         <img src="https://cdn.imweb.me/thumbnail/20251022/5f0f79023d456.png" alt="INTEGRATE" class="main-logo">
 
         <div class="scene" id="scene-container">
@@ -321,44 +127,41 @@
                 <div class="card__face card__face--front">
                     <h1>한완기 실전편</h1>
                     
-                    <button class="btn btn-purple" onclick="showScreen('lunch')">
-                        🍽️ 점심 메뉴
+                    <button class="btn btn-purple" onclick="window.location.hash='daily'">
+                        📅 오늘의 수학 문제
                     </button>
-
-                    <button class="btn btn-pink" onclick="showScreen('image')">
+                    <button class="btn btn-pink" onclick="window.location.hash='image'">
                         단계별 전략 수립
                     </button>
-
-                    <button class="btn btn-mint" onclick="showScreen('timer')">
+                    <button class="btn btn-mint" onclick="window.location.hash='timer'">
                         <span class="emoji">⏱️</span> 100분 타이머
                     </button>
 
                     <p class="book-section-title">추천 교재 (클릭 시 이동)</p>
                     <div class="book-container">
-                        <a href="https://m.sdijbooks.com/detail/ser/?SER_CD=384" target="_blank" class="book-link"><span>한완수<br>시리즈</span></a>
-                        <a href="https://m.sdijbooks.com/detail/ser/?SER_CD=383" target="_blank" class="book-link"><span>한완기<br>기출편</span></a>
-                        <a href="https://m.sdijbooks.com/detail/ser/?SER_CD=415" target="_blank" class="book-link"><span>한완기<br>실전편</span></a>
+                        <a href="https://integrate.kr/" target="_blank" class="book-link"><span>한완수<br>시리즈</span></a>
+                        <a href="https://integrate.kr/" target="_blank" class="book-link"><span>한완기<br>기출편</span></a>
+                        <a href="https://integrate.kr/" target="_blank" class="book-link"><span>한완기<br>실전편</span></a>
                     </div>
                 </div>
 
                 <div class="card__face card__face--back">
                     
-                    <div id="view-lunch" style="display: none; display: flex; flex-direction: column;">
-                        <h1>🎲 점심 메뉴 룰렛</h1>
+                    <div id="view-daily" style="display: none;">
+                        <h1>📅 오늘의 문제</h1>
+                        <p class="timer-hint" id="daily-date">날짜 로딩중...</p>
                         
-                        <div class="lunch-result" id="lunch-result">
-                            하단 시작 버튼을 눌러주세요 👀
+                        <div style="background: var(--box-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
+                            <span id="daily-chapter" style="background: #667eea; color: white; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: bold;">단원명</span>
+                            <h2 id="daily-title" style="margin: 15px 0; font-size: 20px; color: var(--text-main);">문제 로딩중...</h2>
+                            <p id="daily-content" style="font-size: 16px; margin-bottom: 25px; color: var(--text-main); line-height: 1.6;"></p>
+                            
+                            <div style="display: flex; gap: 10px;">
+                                <input type="number" id="daily-answer" placeholder="정답 (숫자) 입력" style="flex: 1; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 16px;">
+                                <button class="btn btn-mint" onclick="checkDailyAnswer()" style="width: auto; padding: 0 25px; margin: 0;">제출</button>
+                            </div>
                         </div>
-
-                        <div class="lunch-canvas-container">
-                            <canvas id="lunch-canvas" width="280" height="300"></canvas>
-                        </div>
-                        
-                        <div class="timer-buttons">
-                            <button class="btn btn-start" onclick="startLunchRoulette()" style="width: 100%; margin-bottom: 0;">▶ 시작 (메뉴 투하)</button>
-                        </div>
-                        
-                        <button class="btn btn-back" onclick="goBackToMain()">← 뒤로 가기</button>
+                        <button class="btn btn-back" onclick="window.location.hash='main'">← 뒤로 가기</button>
                     </div>
 
                     <div id="view-timer" style="display: none;">
@@ -384,8 +187,7 @@
                             </div>
                             <p class="record-count" id="record-count">남은 기록 횟수: 4회</p>
                         </div>
-                        
-                        <button class="btn btn-back" onclick="goBackToMain()">← 뒤로 가기</button>
+                        <button class="btn btn-back" onclick="window.location.hash='main'">← 뒤로 가기</button>
                     </div>
 
                     <div id="view-image" style="display: none;">
@@ -393,11 +195,10 @@
                         <div class="image-container">
                             <img src="단계별_전략.png" alt="단계별 전략">
                         </div>
-                        <button class="btn btn-back" onclick="goBackToMain()">← 뒤로 가기</button>
+                        <button class="btn btn-back" onclick="window.location.hash='main'">← 뒤로 가기</button>
                     </div>
 
                 </div>
-
             </div>
         </div>
 
@@ -421,387 +222,139 @@
     </div>
 
     <script>
-        // 1. 다크모드
+        // --- 1. 외부 JSON 연동 및 수식 렌더링 ---
+        let currentDailyProblem = null;
+
+        async function loadDailyProblem() {
+            try {
+                // 실시간으로 외부 JSON 파일을 읽어옵니다.
+                const response = await fetch('problems.json');
+                if (!response.ok) throw new Error('데이터를 불러오지 못했습니다.');
+                const problemDatabase = await response.json();
+
+                const today = new Date();
+                const dateString = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+                
+                const problemIndex = today.getDate() % problemDatabase.length;
+                currentDailyProblem = problemDatabase[problemIndex];
+
+                document.getElementById('daily-date').textContent = dateString;
+                document.getElementById('daily-chapter').textContent = currentDailyProblem.chapter;
+                document.getElementById('daily-title').textContent = currentDailyProblem.title;
+                document.getElementById('daily-content').innerHTML = currentDailyProblem.content;
+                document.getElementById('daily-answer').value = ''; 
+                
+                // 🚀 새 문제가 화면에 찍힌 직후, MathJax에게 수식을 렌더링하도록 명령합니다.
+                if (window.MathJax) {
+                    MathJax.typesetPromise([document.getElementById('view-daily')]).catch(function (err) {
+                        console.log('수식 렌더링 에러: ' + err.message);
+                    });
+                }
+            } catch (error) {
+                console.error("오류 발생:", error);
+                document.getElementById('daily-title').textContent = "⚠️ 로딩 실패";
+                document.getElementById('daily-content').innerHTML = "온라인 환경(GitHub Pages)에서 실행해주세요. 로컬 파일 열기에서는 보안 정책상 JSON을 불러올 수 없습니다.";
+            }
+        }
+
+        function checkDailyAnswer() {
+            const userAnswer = parseInt(document.getElementById('daily-answer').value);
+            if (isNaN(userAnswer)) { alert("💡 정답을 숫자로 입력해주세요!"); return; }
+            if (userAnswer === currentDailyProblem.answer) { alert("🎉 정답입니다! 훌륭합니다. 오늘의 학습 목표를 달성했어요!"); } 
+            else { alert("앗, 아쉽게도 틀렸습니다. 다시 한번 풀어보세요! 💪"); }
+        }
+
+        // --- 2. 다크모드 & 줌 제어 ---
         function toggleTheme() {
-            const body = document.body;
-            const themeBtn = document.getElementById('themeBtn');
+            const body = document.body; const themeBtn = document.getElementById('themeBtn');
             body.classList.toggle('dark-mode');
-            if (body.classList.contains('dark-mode')) {
-                themeBtn.textContent = '☀️ 라이트 모드';
-            } else {
-                themeBtn.textContent = '🌙 다크 모드';
-            }
+            themeBtn.textContent = body.classList.contains('dark-mode') ? '☀️ 라이트 모드' : '🌙 다크 모드';
         }
 
-        // 2. 줌 제어
         function setZoomEnabled(enabled) {
-            const viewport = document.getElementById('viewport-meta');
-            if (enabled) {
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes');
-            } else {
-                viewport.setAttribute('content', 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
-            }
+            document.getElementById('viewport-meta').setAttribute('content', enabled ? 'width=device-width, initial-scale=1.0, maximum-scale=5.0, user-scalable=yes' : 'width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no');
         }
 
-        // 3. 변수 및 공통 화면 로직
-        // 🚨 타이머 시간 변경 (20초)
-        const maxTime = 20; 
-        let timerInterval = null;
-        let isRunning = false;
-        let startTime = null;
-        let pausedElapsed = 0;
-        let timerEnded = false;
-        const maxRecords = 4;
-        let timestamps = [];
-        const recordLabels = ['1회독 단계', '2회독 단계', '검토/마무리', '풀이 종료'];
+        // --- 3. 타이머 로직 ---
+        const maxTime = 100 * 60; let timerInterval = null; let isRunning = false; let startTime = null; let pausedElapsed = 0; let timerEnded = false;
+        const maxRecords = 4; let timestamps = []; const recordLabels = ['1회독 단계', '2회독 단계', '검토/마무리', '풀이 종료'];
+
+        function formatTime(seconds) { const mins = Math.floor(seconds / 60); const secs = seconds % 60; return mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0'); }
+        function getElapsedTime() { if (!isRunning || !startTime) return pausedElapsed; return Math.min(pausedElapsed + Math.floor((Date.now() - startTime) / 1000), maxTime); }
+        function updateTimerColor(elapsedSeconds) {
+            const container = document.getElementById('timer-container'); container.classList.remove('theme-mint', 'theme-yellow', 'theme-red');
+            if (elapsedSeconds > 5700) container.classList.add('theme-red'); else if (elapsedSeconds > 3000) container.classList.add('theme-yellow'); else container.classList.add('theme-mint');
+        }
+        function updateDisplay() {
+            const elapsed = getElapsedTime(); document.getElementById('timer-display').textContent = formatTime(elapsed); updateTimerColor(elapsed);
+            if (elapsed >= maxTime && isRunning && !timerEnded) {
+                timerEnded = true; clearInterval(timerInterval); pausedElapsed = maxTime; isRunning = false;
+                document.getElementById('breathing-circle').classList.remove('active'); document.getElementById('timer-container').classList.remove('active-theme');
+                const btn = document.getElementById('start-btn'); btn.textContent = '▶ 시작'; btn.className = 'btn btn-start'; alert('🔔 시험시간이 종료되었습니다.');
+            }
+        }
+        function toggleTimer() {
+            const btn = document.getElementById('start-btn'); const circle = document.getElementById('breathing-circle'); const container = document.getElementById('timer-container');
+            if (isRunning) {
+                clearInterval(timerInterval); pausedElapsed = getElapsedTime(); startTime = null; isRunning = false;
+                btn.textContent = '▶ 시작'; btn.className = 'btn btn-start'; circle.classList.remove('active'); container.classList.remove('active-theme');
+            } else {
+                if (getElapsedTime() < maxTime) {
+                    startTime = Date.now(); isRunning = true; timerEnded = false;
+                    btn.textContent = '⏸ 일시정지'; btn.className = 'btn btn-pause'; circle.classList.add('active'); container.classList.add('active-theme');
+                    if (timerInterval) clearInterval(timerInterval); timerInterval = setInterval(updateDisplay, 500); updateDisplay();
+                }
+            }
+        }
+        function recordTimestamp() {
+            if (timestamps.length >= maxRecords) { alert('모든 단계가 기록되었습니다.'); return; }
+            const elapsed = getElapsedTime(); if (!isRunning && elapsed === 0) { alert('타이머를 먼저 시작해주세요.'); return; }
+            timestamps.push(elapsed); updateTimestampDisplay();
+        }
+        function updateTimestampDisplay() {
+            const listElement = document.getElementById('timestamp-list'); const countElement = document.getElementById('record-count'); const recordBtn = document.getElementById('record-btn');
+            if (timestamps.length === 0) { listElement.innerHTML = '<div class="timestamp-item empty">기록 없음</div>'; } 
+            else { listElement.innerHTML = timestamps.map((time, index) => `<div class="timestamp-item"><span class="timestamp-number">${recordLabels[index]}</span><span class="timestamp-time">${formatTime(time)}</span></div>`).join(''); }
+            const remaining = maxRecords - timestamps.length; countElement.textContent = `남은 기록 횟수: ${remaining}회`; recordBtn.disabled = remaining === 0;
+        }
+        function resetTimer() {
+            clearInterval(timerInterval); timerInterval = null; isRunning = false; startTime = null; pausedElapsed = 0; timerEnded = false; timestamps = [];
+            document.getElementById('breathing-circle').classList.remove('active'); document.getElementById('timer-container').classList.remove('active-theme');
+            updateDisplay(); updateTimestampDisplay();
+            const btn = document.getElementById('start-btn'); btn.textContent = '▶ 시작'; btn.className = 'btn btn-start'; document.getElementById('record-btn').disabled = false;
+        }
+
+        // --- 4. 해시(#) 라우팅 로직 ---
         let currentScreen = 'main';
+        window.addEventListener('hashchange', () => { renderScreen(window.location.hash.replace('#', '') || 'main'); });
 
-        // 🔄 화면 전환 (Flip) 로직
-        function showScreen(screen) {
-            // 🚨 화면 전환 시 스크롤을 항상 맨 위로 초기화
-            window.scrollTo(0, 0);
-
-            currentScreen = screen;
-            setZoomEnabled(screen === 'image');
-
-            const mainCard = document.getElementById('main-card');
-            const viewTimer = document.getElementById('view-timer');
-            const viewImage = document.getElementById('view-image');
-            const viewLunch = document.getElementById('view-lunch');
+        function renderScreen(screen) {
+            currentScreen = screen; setZoomEnabled(screen === 'image');
+            const mainCard = document.getElementById('main-card'); const viewTimer = document.getElementById('view-timer'); const viewImage = document.getElementById('view-image'); const viewDaily = document.getElementById('view-daily');
 
             if (screen === 'main') {
                 mainCard.classList.remove('is-flipped');
-                setTimeout(() => {
-                    if (currentScreen === 'main') {
-                        viewTimer.style.display = 'none';
-                        viewImage.style.display = 'none';
-                        viewLunch.style.display = 'none';
-                        if(pinballAnimId) cancelAnimationFrame(pinballAnimId);
-                    }
-                }, 400); 
+                setTimeout(() => { if (currentScreen === 'main') { viewTimer.style.display = 'none'; viewImage.style.display = 'none'; viewDaily.style.display = 'none'; } }, 400); 
             } else {
-                viewTimer.style.display = (screen === 'timer') ? 'block' : 'none';
-                viewImage.style.display = (screen === 'image') ? 'block' : 'none';
-                viewLunch.style.display = (screen === 'lunch') ? 'flex' : 'none';
+                viewTimer.style.display = 'none'; viewImage.style.display = 'none'; viewDaily.style.display = 'none';
+                if (screen === 'timer') viewTimer.style.display = 'block';
+                else if (screen === 'image') viewImage.style.display = 'block';
+                else if (screen === 'daily') { viewDaily.style.display = 'block'; loadDailyProblem(); }
                 mainCard.classList.add('is-flipped');
             }
-
-            if (screen !== 'main') {
-                history.pushState({ screen: screen }, '', '');
-            }
         }
 
-        // ==========================================
-        // 🎲 점심 메뉴 룰렛 (커스텀 2D 물리 엔진)
-        // ==========================================
-        let pinballAnimId;
-        let balls = [];
-        let pegs = [];
-        let lunchWinner = null;
-        const lunchCanvas = document.getElementById('lunch-canvas');
-        const ctx = lunchCanvas.getContext('2d');
-
-        const menus = ["돈까스", "제육", "국밥", "짜장면", "햄버거", "초밥", "마라탕", "샐러드"];
-        const colors = ["#ef4444", "#f59e0b", "#10b981", "#3b82f6", "#8b5cf6", "#ec4899", "#f43f5e", "#14b8a6"];
-
-        function initPegs() {
-            pegs = [];
-            const rows = 7;
-            const spacingX = 35;
-            const spacingY = 32;
-            const startY = 40;
-
-            for (let i = 0; i < rows; i++) {
-                let cols = (i % 2 === 0) ? 6 : 7;
-                let startX = (lunchCanvas.width - (cols - 1) * spacingX) / 2;
-                for (let j = 0; j < cols; j++) {
-                    pegs.push({ x: startX + j * spacingX, y: startY + i * spacingY, r: 4 });
-                }
-            }
-        }
-
-        function startLunchRoulette() {
-            if(pinballAnimId) cancelAnimationFrame(pinballAnimId);
-            lunchWinner = null;
-            
-            const resultEl = document.getElementById('lunch-result');
-            resultEl.innerHTML = "결과 대기중... 👀";
-            resultEl.classList.remove('winner-text');
-
-            initPegs();
-
-            balls = menus.map((menu, i) => {
-                return {
-                    x: lunchCanvas.width / 2 + (Math.random() - 0.5) * 60, 
-                    y: -30 - Math.random() * 80, 
-                    vx: (Math.random() - 0.5) * 4,
-                    vy: 0,
-                    r: 14, 
-                    text: menu,
-                    color: colors[i % colors.length]
-                };
-            });
-
-            updatePinball();
-        }
-
-        function updatePinball() {
-            ctx.clearRect(0, 0, lunchCanvas.width, lunchCanvas.height);
-
-            ctx.fillStyle = document.body.classList.contains('dark-mode') ? '#64748b' : '#cbd5e1';
-            pegs.forEach(p => {
-                ctx.beginPath();
-                ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-                ctx.fill();
-            });
-
-            balls.forEach(b => {
-                b.vy += 0.25; 
-                b.vx *= 0.99; 
-                b.vy *= 0.99;
-
-                b.x += b.vx;
-                b.y += b.vy;
-
-                if (b.x < b.r) { b.x = b.r; b.vx *= -0.7; }
-                if (b.x > lunchCanvas.width - b.r) { b.x = lunchCanvas.width - b.r; b.vx *= -0.7; }
-
-                pegs.forEach(p => {
-                    let dx = b.x - p.x;
-                    let dy = b.y - p.y;
-                    let dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < b.r + p.r) {
-                        let angle = Math.atan2(dy, dx);
-                        let overlap = (b.r + p.r) - dist;
-                        b.x += Math.cos(angle) * overlap;
-                        b.y += Math.sin(angle) * overlap;
-
-                        let nx = dx / dist;
-                        let ny = dy / dist;
-                        let p1 = 2 * (b.vx * nx + b.vy * ny);
-                        b.vx -= p1 * nx * 0.55; 
-                        b.vy -= p1 * ny * 0.55;
-                    }
-                });
-
-                if (b.y > lunchCanvas.height - b.r) {
-                    b.y = lunchCanvas.height - b.r;
-                    b.vy *= -0.4;
-                    b.vx *= 0.8;
-
-                    if (!lunchWinner) {
-                        lunchWinner = b.text;
-                        const resultEl = document.getElementById('lunch-result');
-                        resultEl.innerHTML = `🎉 당첨: <strong>[ ${lunchWinner} ]</strong> 🎉`;
-                        resultEl.classList.add('winner-text');
-                    }
-                }
-            });
-
-            for (let i = 0; i < balls.length; i++) {
-                for (let j = i + 1; j < balls.length; j++) {
-                    let b1 = balls[i];
-                    let b2 = balls[j];
-                    let dx = b2.x - b1.x;
-                    let dy = b2.y - b1.y;
-                    let dist = Math.sqrt(dx*dx + dy*dy);
-                    if (dist < b1.r + b2.r) {
-                        let overlap = (b1.r + b2.r) - dist;
-                        let nx = dx / dist;
-                        let ny = dy / dist;
-                        b1.x -= nx * overlap / 2;
-                        b1.y -= ny * overlap / 2;
-                        b2.x += nx * overlap / 2;
-                        b2.y += ny * overlap / 2;
-
-                        let p = (b1.vx * nx + b1.vy * ny - b2.vx * nx - b2.vy * ny);
-                        b1.vx -= p * nx * 0.8;
-                        b1.vy -= p * ny * 0.8;
-                        b2.vx += p * nx * 0.8;
-                        b2.vy += p * ny * 0.8;
-                    }
-                }
-            }
-
-            balls.forEach(b => {
-                ctx.beginPath();
-                ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
-                ctx.fillStyle = b.color;
-                ctx.fill();
-                ctx.lineWidth = 1.5;
-                ctx.strokeStyle = "#ffffff";
-                ctx.stroke();
-
-                ctx.fillStyle = "#ffffff";
-                ctx.font = "bold 10px 'Pretendard', sans-serif";
-                ctx.textAlign = "center";
-                ctx.textBaseline = "middle";
-                let displayText = b.text.length > 3 ? b.text.substring(0, 2) : b.text;
-                ctx.fillText(displayText, b.x, b.y); 
-            });
-
-            pinballAnimId = requestAnimationFrame(updatePinball);
-        }
-
-        // ==========================================
-        // ⏱️ 타이머 로직
-        // ==========================================
-        function formatTime(seconds) {
-            const mins = Math.floor(seconds / 60);
-            const secs = seconds % 60;
-            return mins.toString().padStart(2, '0') + ':' + secs.toString().padStart(2, '0');
-        }
-
-        function getElapsedTime() {
-            if (!isRunning || !startTime) return pausedElapsed;
-            const now = Date.now();
-            const elapsed = pausedElapsed + Math.floor((now - startTime) / 1000);
-            return Math.min(elapsed, maxTime);
-        }
-
-        // 🚨 비율(%) 계산으로 로직 수정
-        function updateTimerColor(elapsedSeconds) {
-            const container = document.getElementById('timer-container');
-            container.classList.remove('theme-mint', 'theme-yellow', 'theme-red');
-            
-            // 퍼센트 계산
-            const percentage = (elapsedSeconds / maxTime) * 100;
-
-            if (percentage >= 95) { 
-                container.classList.add('theme-red'); 
-            } else if (percentage >= 50) { 
-                container.classList.add('theme-yellow'); 
-            } else { 
-                container.classList.add('theme-mint'); 
-            }
-        }
-
-        function updateDisplay() {
-            const elapsed = getElapsedTime();
-            document.getElementById('timer-display').textContent = formatTime(elapsed);
-            updateTimerColor(elapsed);
-
-            if (elapsed >= maxTime && isRunning && !timerEnded) {
-                timerEnded = true;
-                clearInterval(timerInterval);
-                pausedElapsed = maxTime;
-                isRunning = false;
-                document.getElementById('breathing-circle').classList.remove('active');
-                
-                // 🚨 타이머 종료 시 글자색 초기화 클래스 삭제 (더 이상 사용 안 함)
-                // document.getElementById('timer-container').classList.remove('active-theme');
-                
-                const btn = document.getElementById('start-btn');
-                btn.textContent = '▶ 시작';
-                btn.className = 'btn btn-start'; 
-                alert('🔔 시험시간이 종료되었습니다.');
-            }
-        }
-
-        function toggleTimer() {
-            const btn = document.getElementById('start-btn');
-            const circle = document.getElementById('breathing-circle');
-
-            if (isRunning) {
-                clearInterval(timerInterval);
-                pausedElapsed = getElapsedTime();
-                startTime = null;
-                isRunning = false;
-                btn.textContent = '▶ 시작';
-                btn.className = 'btn btn-start';
-                circle.classList.remove('active');
-            } else {
-                if (getElapsedTime() < maxTime) {
-                    startTime = Date.now();
-                    isRunning = true;
-                    timerEnded = false;
-                    btn.textContent = '⏸ 일시정지';
-                    btn.className = 'btn btn-pause';
-                    circle.classList.add('active');
-                    if (timerInterval) clearInterval(timerInterval);
-                    timerInterval = setInterval(updateDisplay, 500);
-                    updateDisplay();
-                }
-            }
-        }
-
-        function recordTimestamp() {
-            if (timestamps.length >= maxRecords) {
-                alert('모든 단계가 기록되었습니다.');
-                return;
-            }
-            const elapsed = getElapsedTime();
-            if (!isRunning && elapsed === 0) {
-                alert('타이머를 먼저 시작해주세요.');
-                return;
-            }
-            timestamps.push(elapsed);
-            updateTimestampDisplay();
-        }
-
-        function updateTimestampDisplay() {
-            const listElement = document.getElementById('timestamp-list');
-            const countElement = document.getElementById('record-count');
-            const recordBtn = document.getElementById('record-btn');
-            
-            if (timestamps.length === 0) {
-                listElement.innerHTML = '<div class="timestamp-item empty">기록 없음</div>';
-            } else {
-                listElement.innerHTML = timestamps.map((time, index) => `
-                    <div class="timestamp-item">
-                        <span class="timestamp-number">${recordLabels[index]}</span>
-                        <span class="timestamp-time">${formatTime(time)}</span>
-                    </div>
-                `).join('');
-            }
-            const remaining = maxRecords - timestamps.length;
-            countElement.textContent = `남은 기록 횟수: ${remaining}회`;
-            if (remaining === 0) recordBtn.disabled = true;
-            else recordBtn.disabled = false;
-        }
-
-        function resetTimer() {
-            clearInterval(timerInterval);
-            timerInterval = null;
-            isRunning = false;
-            startTime = null;
-            pausedElapsed = 0;
-            timerEnded = false;
-            timestamps = [];
-            document.getElementById('breathing-circle').classList.remove('active');
-            updateDisplay();
-            updateTimestampDisplay();
-            const btn = document.getElementById('start-btn');
-            btn.textContent = '▶ 시작';
-            btn.className = 'btn btn-start';
-            document.getElementById('record-btn').disabled = false;
-        }
-
-        function goBackToMain() {
-            if (currentScreen === 'timer') resetTimer();
-            showScreen('main');
-        }
-
+        // --- 5. 페이지 초기화 ---
         function handlePageResume() { if (isRunning) updateDisplay(); }
         document.addEventListener('visibilitychange', function() { if (!document.hidden) handlePageResume(); });
-        window.addEventListener('focus', handlePageResume);
-        window.addEventListener('pageshow', handlePageResume);
-        window.addEventListener('popstate', function(e) { goBackToMain(); });
-        history.replaceState({ screen: 'main' }, '', '');
+        window.addEventListener('focus', handlePageResume); window.addEventListener('pageshow', handlePageResume);
 
-        document.addEventListener("DOMContentLoaded", function() {
+        window.addEventListener('DOMContentLoaded', () => {
+            renderScreen(window.location.hash.replace('#', '') || 'main');
             const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
             if (isMobile) {
-                const instaBtn = document.getElementById('sns-insta');
-                if(instaBtn) {
-                    instaBtn.removeAttribute("target");
-                    instaBtn.href = "instagram://user?username=lhw_math";
-                }
-                const naverBtn = document.getElementById('sns-naver');
-                if(naverBtn) {
-                    naverBtn.removeAttribute("target");
-                    naverBtn.href = "navercafe://cafe?cafeId=23380319";
-                }
+                const instaBtn = document.getElementById('sns-insta'); if(instaBtn) { instaBtn.removeAttribute("target"); instaBtn.href = "instagram://user?username=lhw_math"; }
+                const naverBtn = document.getElementById('sns-naver'); if(naverBtn) { naverBtn.removeAttribute("target"); naverBtn.href = "navercafe://cafe?cafeId=23380319"; }
             }
         });
     </script>
