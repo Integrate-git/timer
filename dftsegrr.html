@@ -67,7 +67,35 @@
         .record-count { font-size: 14px; color: var(--text-sub); margin-top: 10px; } .emoji { font-size: 24px; }
         
         .ig-footer { padding: 0 12px 20px; width: 100%; margin-top: 20px;} .ig-footer__sns { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 15px; } .ig-sns { width: 40px; height: 40px; display: inline-flex; align-items: center; justify-content: center; border-radius: 999px; text-decoration: none; background: var(--box-bg); border: 1px solid var(--border-color); transition: transform .12s ease, box-shadow .12s ease; color: var(--text-sub); } .ig-sns:hover { transform: translateY(-2px); box-shadow: 0 6px 18px rgba(0, 0, 0, .1); } .ig-sns svg { width: 20px; height: 20px; fill: currentColor; stroke: currentColor; } .ig-footer__info { margin: 12px 0 10px; display: grid; gap: 6px; color: var(--text-sub); font-size: 12.5px; line-height: 1.35; text-align: center; } .ig-footer__info p { margin: 0; } .ig-footer__copyright { margin: 0; font-size: 12.5px; color: var(--text-sub); text-align: center; }
-        @media (max-width: 480px) { .card__face { padding: 25px; } h1 { font-size: 22px; } .timer-container { width: 240px; height: 240px; } .timer-display { font-size: 48px; } .timer-buttons { flex-wrap: wrap; } .timer-buttons .btn { flex: 1 1 45%; } .book-link { font-size: 11px; } }
+        
+        /* 📅 [오늘의 문제 전용 스타일] */
+        .daily-box {
+            background: var(--box-bg); padding: 25px; border-radius: 12px;
+            border: 1px solid var(--border-color); margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;
+            width: 100%; box-sizing: border-box; /* 화면 밖으로 삐져나감 방지 */
+        }
+        .daily-chapter-badge {
+            background: #667eea; color: white; padding: 5px 10px;
+            border-radius: 6px; font-size: 13px; font-weight: bold; display: inline-block;
+        }
+        .daily-input-group { display: flex; gap: 10px; width: 100%; }
+        .daily-input {
+            flex: 1; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color);
+            background: var(--bg-color); color: var(--text-main); font-size: 16px;
+            min-width: 0; /* 모바일에서 인풋창이 박스를 뚫고 나가는 현상 방지 */
+        }
+        .daily-btn { width: auto; padding: 0 25px; margin: 0; white-space: nowrap; }
+        
+        @media (max-width: 480px) { 
+            .card__face { padding: 25px; } h1 { font-size: 22px; } 
+            .timer-container { width: 240px; height: 240px; } .timer-display { font-size: 48px; } 
+            .timer-buttons { flex-wrap: wrap; } .timer-buttons .btn { flex: 1 1 45%; } .book-link { font-size: 11px; } 
+            
+            .daily-box { padding: 15px; } /* 모바일에서는 안쪽 여백을 줄임 */
+            .daily-input-group { flex-direction: column; } /* 모바일에서는 입력창과 제출 버튼을 위아래로 배치 */
+            .daily-btn { width: 100%; padding: 15px; }
+        }
     </style>
 </head>
 <body>
@@ -98,14 +126,14 @@
                         <h1>📅 오늘의 문제</h1>
                         <p class="timer-hint" id="daily-date">날짜 로딩중...</p>
                         
-                        <div style="background: var(--box-bg); padding: 25px; border-radius: 12px; border: 1px solid var(--border-color); margin-bottom: 20px; box-shadow: 0 4px 10px rgba(0,0,0,0.05); text-align: left;">
-                            <span id="daily-chapter" style="background: #667eea; color: white; padding: 5px 10px; border-radius: 6px; font-size: 13px; font-weight: bold;">로딩중...</span>
+                        <div class="daily-box">
+                            <span class="daily-chapter-badge" id="daily-chapter">로딩중...</span>
                             <h2 id="daily-title" style="margin: 15px 0; font-size: 20px; color: var(--text-main);">문제 데이터를 가져오는 중입니다...</h2>
                             <p id="daily-content" style="font-size: 16px; margin-bottom: 25px; color: var(--text-main); line-height: 1.6;"></p>
                             
-                            <div style="display: flex; gap: 10px;">
-                                <input type="number" id="daily-answer" placeholder="정답 (숫자) 입력" style="flex: 1; padding: 15px; border-radius: 8px; border: 1px solid var(--border-color); background: var(--bg-color); color: var(--text-main); font-size: 16px;">
-                                <button class="btn btn-mint" onclick="checkDailyAnswer()" style="width: auto; padding: 0 25px; margin: 0;">제출</button>
+                            <div class="daily-input-group">
+                                <input type="number" id="daily-answer" class="daily-input" placeholder="정답 (숫자) 입력">
+                                <button class="btn btn-mint daily-btn" onclick="checkDailyAnswer()">제출</button>
                             </div>
                         </div>
                         <button class="btn btn-back" onclick="window.location.hash='main'">← 뒤로 가기</button>
@@ -197,8 +225,11 @@
                 // 🌟 2. 가져온 숫자로 로테이션 번호를 계산합니다.
                 const problemNumber = (today.getDate() % TOTAL_PROBLEMS) || TOTAL_PROBLEMS; 
                 
-                // 🌟 3. 계산된 번호(예: prob_1)의 문제를 쏙 빼옵니다.
-                const docRef = doc(db, "problems", `prob_${problemNumber}`);
+                // 🌟 숫자 '1'을 '0001'처럼 4자리 문자열로 변환합니다.
+                const formattedId = problemNumber.toString().padStart(4, '0');
+                
+                // 🌟 3. 계산된 번호(예: 0001)의 문제를 쏙 빼옵니다. (prob_ 부분 삭제)
+                const docRef = doc(db, "problems", formattedId);
                 const docSnap = await getDoc(docRef);
 
                 if (docSnap.exists()) {
